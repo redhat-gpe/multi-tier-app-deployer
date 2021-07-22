@@ -1,0 +1,13 @@
+---
+postgres_users:
+  - name: flask
+    password: redhat
+    database: flask_db
+    state: present
+    priv: ALL
+
+postgres_databases:
+  - name: flask_db
+    owner: flask
+  - name: books_store
+    owner: flask

@@ -1,0 +1,11 @@
+---
+- name: Deploy, configure, and populate Postgres 10
+  hosts: database_servers
+  become: true
+  gather_facts: false
+  tags:
+    - database_servers
+
+  roles:
+  
+    - postgres
