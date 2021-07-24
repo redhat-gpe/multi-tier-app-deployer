@@ -81,3 +81,10 @@ https://opensource.com/article/17/6/ansible-postgresql-operations
 ** Shout out for their Ansible Automation Cookbook
 * Jeff Geerlinguy for his Ansible Galaxy Postgres Role
 
+
+
+
+Add notes for Remote development via a jumpbox
+
+
+

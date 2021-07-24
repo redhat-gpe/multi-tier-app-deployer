@@ -1,34 +1,41 @@
 ---
+
+- name: Disbale any postgres module
+  command: dnf -qy module disable postgresql
+
 - name: Install Postgres packages
-  package:
+  dnf:
     name: "{{ __package }}"
     state: present
+    enablerepo:
+      - pgdg12
+    disable_gpg_check: true
   loop: 
-    - "{{ postgres_rhel7_repo }}"        
+    - "{{ postgres_rhel8_repo }}"        
     - "{{ postgres_packages }}"
-    - "{{ postgres_library }}"
+    #    - "{{ postgres_library }}"
   loop_control:
     loop_var: __package
 
 - name: Check if Postgres initialized
   stat:
-    path: "{{ postgres_10_data_dir }}/PG_VERSION"
+    path: "{{ postgres_12_data_dir }}/PG_VERSION"
   register: r_postgres_init_dir_state
 
 - when: not r_postgres_init_dir_state.stat.exists
   name: Run Postgres initdb to initialize if postgres not initialized
-  command: "{{ postgres_10_bin_path }}/postgresql-10-setup initdb"
+  command: "{{ postgres_12_bin_path }}/postgresql-12-setup initdb"
   notify: restart_postgres
 
 - name: Setup Postgres for remote password auth
   template:
     src: pg_hba.conf.j2
-    dest: "{{ postgres_10_data_dir }}/pg_hba.conf"
+    dest: "{{ postgres_12_data_dir }}/pg_hba.conf"
   notify: restart_postgres
 
 - name: Setup Postgres to listen on network interfaces
   lineinfile:
-    dest: "{{ postgres_10_data_dir }}/postgresql.conf"
+    dest: "{{ postgres_12_data_dir }}/postgresql.conf"
     line: "listen_addresses = '*'"
     insertafter: "#listen_addresses"
   notify: restart_postgres

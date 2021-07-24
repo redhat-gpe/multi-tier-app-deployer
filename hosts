@@ -1,12 +1,13 @@
 [load_balancers]
-frontend 
+frontend.example.com
 
 [app_servers]
-app-01
-app-02
+app-01.example.com
+app-02.example.com
 
 [database_servers]
-database-01
+app-02.example.com
+#database-01.example.com
 
 [internal:children]
 load_balancers
