@@ -13,9 +13,10 @@
     state: present  
 
 - name: Install flask packages including postgres pre-reqs
-  package:
+  dnf:
     name: "{{ __package }}"
     state: present
+    disable_gpg_check: true
   loop: 
     - "{{ postgres_rhel8_repo }}"
     - "{{ app_yum_packages }}"        
@@ -45,7 +46,7 @@
       pip:
         name: "{{ pip_dependencies }}"
         state: latest
-        executable: /usr/bin/pip3
+        executable: /usr/bin/pip3.8
 
     - name: "Create virtualenv {{ virtualenv_name }} for Flask"
       pip:
