@@ -10,14 +10,15 @@
 
     - debug:
         msg: 
-          - "IP is {{ hostvars['appdb1']['ansible_default_ipv4']['address'] }}"
+          - "IP is {{ hostvars['database-01.example.com']['ansible_default_ipv4']['address'] }}"
           - "First App server  {{ groups.app_servers[0] }}" 
         verbosity: 2        
 
     - name: Smoketest Postgres database
       postgresql_ping:
         db: flask_db
-        login_host: "{{ hostvars['appdb1']['ansible_default_ipv4']['address'] }}"
+        #login_host: "{{ hostvars['database-01.example.com']['ansible_default_ipv4']['address'] }}"
+        login_host: "{{ hostvars['database-01.example.com'].ansible_default_ipv4.address }}"
         login_user: flask
         login_password: redhat
         ssl_mode: disable
@@ -36,7 +37,7 @@
  
     - name: Check webserver for correct response
       uri:
-        url: "http://frontend1/ping"
+        url: "http://frontend.example.com/ping"
         return_content: yes
       until: '"alive" in result.content'
       retries: 10
