@@ -1,10 +1,27 @@
 ---
-- name: Teardown Postgres 10
+- name: Teardown Postgres 12
   hosts: database_servers
   become: true
   gather_facts: false
   collections:
     - community.postgresql
+  vars:
+    postgres_rhel8_repo: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+
+    postgres_packages:
+      #  - postgresql12
+      - postgresql12-server 
+      - postgresql12-contrib 
+      - postgresql12-libs
+      - python3-psycopg2
+      #postgres_library: python-psycopg2
+    postgres_12_data_dir: /var/lib/pgsql/12/data
+    postgres_12_bin_path: /usr/pgsql-12/bin
+    postgres_service: postgresql-12.service
+    postgres_port: 5432
+    postgres_user: postgres
+
+
 
   tasks:
 
@@ -13,14 +30,13 @@
         name: "{{ __package }}"
         state: absent
       loop: 
-        - "{{ postgres_rhel8_repo }}"        
         - "{{ postgres_packages }}"
       loop_control:
         loop_var: __package
 
-    - name: Remove Postgres 10 data directory
+    - name: Remove Postgres 12 data directory
       file:
-        path: /var/lib/pgsql/10
+        path: /var/lib/pgsql/12
         state: absent
 
     - name: Remove Postgres user
@@ -45,16 +61,13 @@
     virtualenv_home: /opt/virtual_envs
     virtualenv_python: /usr/bin/python3
 
-    app_yum_packages:
-      - autoconf
-      - automake
-      - git
-      - gcc
-      - libtool
-      - python3
-      - python3-devel
-      - python3-pip
-
+#    app_yum_packages:
+#      - autoconf
+#      - automake
+#      - git
+#      - gcc
+#      - libtool
+#
     pip_dependencies: []
       #      - virtualenv
       # - pip  
@@ -91,12 +104,12 @@
               loop_control:
                 loop_var: __path
 
-    - name: Remove pre-requisite pip3 packages
-      pip:
-        name: "{{ pip_dependencies }}"
-        state: absent
-        executable: /usr/bin/pip
-          #      ignore_errors: yes
+#    - name: Remove pre-requisite pip3 packages
+#      pip:
+#        name: "{{ pip_dependencies }}"
+#        state: absent
+#        executable: /usr/bin/pip
+#          #      ignore_errors: yes
 
     - name: Remove flask user
       user:
@@ -140,10 +153,10 @@
         name: "{{ load_balancer_packages }}"
         state: absent
 
-#    - name: configure haproxy
-#      file:
-#        path: /etc/haproxy/haproxy.cfg
-#        state: absent
+    - name: configure haproxy
+      file:
+        path: /etc/haproxy/haproxy.cfg
+        state: absent
 
 - name: Teardown app_servers flask configuration
   hosts: app_servers
@@ -162,15 +175,11 @@
     virtualenv_home: /opt/virtual_envs
     virtualenv_python: /usr/bin/python3
 
-    app_yum_packages:
-      - autoconf
-      - automake
-      - git
-      - gcc
-      - libtool
-      - python3
-      - python3-devel
-      - python3-pip
+#    app_yum_packages:
+#      - autoconf
+#      - automake
+#      - gcc
+#      - libtool
 
     pip_dependencies: []
       #      - virtualenv
@@ -208,25 +217,25 @@
               loop_control:
                 loop_var: __path
 
-    - name: Remove pre-requisite pip3 packages
-      pip:
-        name: "{{ pip_dependencies }}"
-        state: absent
-        executable: /usr/bin/pip
-          #      ignore_errors: yes
+#    - name: Remove pre-requisite pip3 packages
+#      pip:
+#        name: "{{ pip_dependencies }}"
+#        state: absent
+#        executable: /usr/bin/pip
+#          #      ignore_errors: yes
 
     - name: Remove flask user
       user:
         name: "{{ flask_user }}"
         state: absent
 
-    - name: Remove app yum packages
-      package:
-        name: "{{ __package }}"
-        state: absent
-      loop: "{{ app_yum_packages }}"        
-      loop_control:
-        loop_var: __package
+#    - name: Remove app yum packages
+#      package:
+#        name: "{{ __package }}"
+#        state: absent
+#      loop: "{{ app_yum_packages }}"        
+#      loop_control:
+#        loop_var: __package
 
     - name: Remove flask repo and virtualenv
       file:
@@ -238,4 +247,4 @@
       loop_control:
         loop_var: __path
 
-
+...
