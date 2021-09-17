@@ -4,8 +4,8 @@
   hosts: database_servers
   become: true
   gather_facts: false
-  collections:
-    - community.postgresql
+#  collections:
+#    - community.postgresql
   tags:
     - database_servers
 
