@@ -1,0 +1,12 @@
+---
+
+- name: Simple ping to test navigator
+  hosts: all
+  become: false
+  gather_facts: false
+
+  tasks:
+
+    - name: Simple ping
+      ansible.builtin.ping:
+  
