@@ -2,14 +2,14 @@
 ansible-navigator:
   execution-environment:
     container-engine: docker
+    container-options:
+      - "--platform=linux/amd64"
     enabled: true
     pull:
       policy: missing
-    container-options:
-      - "--platform=linux/amd64"
-  logging:
-    file: /tmp/ansible-navigator/logs/ansible-navigator.log
-  playbook-artifact:
-    enable: true
-    replay: /tmp/artifact.json
-    save-as: /tmp/artifact.json
+#  logging:
+#    file: /tmp/ansible-navigator/logs/ansible-navigator.log
+#  playbook-artifact:
+#    enable: true
+#    replay: /tmp/artifact.json
+#    save-as: /tmp/artifact.json
