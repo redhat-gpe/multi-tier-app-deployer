@@ -4,7 +4,7 @@
   command: dnf -qy module disable postgresql
 
 - name: Install Postgres packages
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ __package }}"
     state: present
     enablerepo:
@@ -17,30 +17,30 @@
     loop_var: __package
 
 - name: Check if Postgres initialized
-  stat:
+  ansible.builtin.stat:
     path: "{{ postgres_12_data_dir }}/PG_VERSION"
   register: r_postgres_init_dir_state
 
 - when: not r_postgres_init_dir_state.stat.exists
   name: Run Postgres initdb to initialize if postgres not initialized
-  command: "{{ postgres_12_bin_path }}/postgresql-12-setup initdb"
+  ansible.builtin.command: "{{ postgres_12_bin_path }}/postgresql-12-setup initdb"
   notify: restart_postgres
 
 - name: Setup Postgres for remote password auth
-  template:
+  ansible.builtin.template:
     src: pg_hba.conf.j2
     dest: "{{ postgres_12_data_dir }}/pg_hba.conf"
   notify: restart_postgres
 
 - name: Setup Postgres to listen on network interfaces
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "{{ postgres_12_data_dir }}/postgresql.conf"
     line: "listen_addresses = '*'"
     insertafter: "#listen_addresses"
   notify: restart_postgres
 
 - name: Setup Postgres as started and enabled on boot.
-  service:
+  ansible.builtin.service:
     name: "{{ postgres_service }}"
     state: "{{ postgres_service_state | default('started') }}"
     enabled: "{{ postgres_service_enabled | default(true) }}"
@@ -49,7 +49,7 @@
   block:
 
     - name: Setup Postgres database(s) 
-      postgresql_db:
+      community.postgresql.postgresql_db:
         name: "{{ __database.name }}"
         state: "{{ __database.state | default('present') }}"
       loop: "{{ postgres_databases }}"
@@ -57,7 +57,7 @@
         loop_var: __database
 
     - name: Create Postgres user#(s) 
-      postgresql_user:
+      community.postgresql.postgresql_user:
         name: "{{ __user.name }}"
         password: "{{ __user.password | default(omit) }}"
         encrypted: true # "{{ __user.encrypted | default(omit) }}"
