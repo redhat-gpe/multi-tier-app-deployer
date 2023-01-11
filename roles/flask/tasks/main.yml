@@ -1,6 +1,6 @@
 ---
-- name: Add appdb1 IP address to app servers /etc/hosts
-  lineinfile:
+- name: Add database IP address to app servers /etc/hosts
+  ansible.builtin.lineinfile:
     dest: /etc/hosts
     regexp: '.*appdb1$'
     line: "{{ groups.database_servers[0] }} database-01"
@@ -8,12 +8,12 @@
     state: present
 
 - name: Create flask user
-  user:
+  ansible.builtin.user:
     name: "{{ flask_user }}"
     state: present  
 
 - name: Install flask packages including postgres pre-reqs
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ __package }}"
     state: present
     disable_gpg_check: true
@@ -25,7 +25,7 @@
     loop_var: __package
 
 - name: "Install flask repo {{ flask_repo }}"
-  git:
+  ansible.builtin.git:
     repo: "{{ flask_repo }}"
     dest: "{{ flask_home }}/{{ flask_app_name }}"
     #    version: next-gen
@@ -35,7 +35,7 @@
     - git
 
 - name: "Change flash repo owner to {{ flask_user }} recursively"      
-  file: 
+  ansible.builtin.file: 
     dest: "{{ flask_home }}/{{ flask_app_name }}"
     owner: "{{ flask_user }}"
 
@@ -43,13 +43,13 @@
   block:
 
     - name: Setup pre-requisite pip3 packages
-      pip:
+      ansible.builtin.pip:
         name: "{{ pip_dependencies }}"
         state: latest
         executable: /usr/bin/pip3.8
 
     - name: "Create virtualenv {{ virtualenv_name }} for Flask"
-      pip:
+      ansible.builtin.pip:
         requirements: "{{ flask_home }}/{{ flask_app_name }}/requirements.txt"
         virtualenv: "{{ virtualenv_home }}/{{ flask_app_name }}"
         virtualenv_site_packages: no
@@ -59,24 +59,25 @@
     - virtualenv  
       
 - name: Initialize flask app database resources
-  command: "{{ virtualenv_home }}/{{ flask_app_name }}/bin/python3 {{ flask_home }}/{{ flask_app_name }}/config.py"
+  ansible.builtin.command: "{{ virtualenv_home }}/{{ flask_app_name }}/bin/python3 {{ flask_home }}/{{ flask_app_name }}/config.py"
   run_once: true
 
 - name: "Generate {{ flask_app_name }} startup script"    
-  template:
+  ansible.builtin.template:
     src: launch_resource_hub.j2
     dest: /usr/local/bin/launch_resource_hub   
     mode: '0555'
 
 - name: template systemd service config
-  template:
+  ansible.builtin.template:
     src: flask_service.j2
     dest: /etc/systemd/system/{{ flask_app_name }}.service
     mode: '0755'
 
 - name: start systemd app service
-  systemd: 
+  ansible.builtin.systemd: 
     name: "{{ flask_app_name }}.service"
     state: restarted 
     enabled: yes
 
+...
