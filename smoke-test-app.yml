@@ -10,14 +10,14 @@
 
     - debug:
         msg: 
-          - "IP is {{ hostvars['database-01']['ansible_default_ipv4']['address'] }}"
+          - "IP is {{ hostvars['database01']['ansible_default_ipv4']['address'] }}"
           - "First App server  {{ groups.app_servers[0] }}" 
         verbosity: 2        
 
     - name: Smoketest Postgres database
       postgresql_ping:
         db: flask_db
-        #login_host: "{{ hostvars['database-01'].ansible_default_ipv4.address }}"
+        #login_host: "{{ hostvars['database01'].ansible_default_ipv4.address }}"
         login_host: "{{ hostvars[groups.database_servers[0]].ansible_default_ipv4.address }}"
         login_user: flask
         login_password: redhat
