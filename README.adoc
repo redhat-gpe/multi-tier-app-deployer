@@ -1,10 +1,16 @@
 === Overview
 
-New monolithic Ansible playbook, `main.yml` and supporting files  which is designed for teaching and training in refacoring and
-the use of roles, collections etc.
-Designed to replace the function of the old link:https://github.com/tonykay/bad-ansible[`bad-ansible`] with a different
-approach, i.e. start with a fully functional playbook and teardown and iteratively refactor.
+Simple sample teaching or demo repo showing very simple roles deploying a 3-Tier, or multi-tier app called Resource Hub.
+Basically the primary roles build "from the back out" the application which includes a simple website and API.
 
+- Database (Postgres)
+- App Servers (Python Flask)
+- Load Balancer (HAProxy)
+
+Designed to replace the function of the old link:https://github.com/tonykay/bad-ansible[`bad-ansible`]
+
+
+Application code itself can be found here: https://github.com/tonykay/resource_hub.git
 
 ==== Quick Start
 
