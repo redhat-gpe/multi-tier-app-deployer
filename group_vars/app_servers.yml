@@ -3,9 +3,10 @@
 flask_app_name: resource_hub
 flask_user: flask
 flask_home: /opt/
-flask_repo: https://github.com/redhat-gpe/app_resource_hub.git
+flask_repo: https://github.com/redhat-gpe/multi-tier-app.git
 #flask_scm_ref: next-gen
 flask_app_lauch_script: /usr/local/bin/launch_resource_hub   
+
 virtualenv_name: "venv-{{ flask_app_name }}"  
 virtualenv_home: /opt/virtual_envs
 virtualenv_python: /usr/bin/python3
@@ -25,7 +26,6 @@ pip_dependencies:
   - virtualenv
   - pip  
 #  - psycopg2-binary
-
 
 postgres_rhel8_repo: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 postgres_library: python3-psycopg2
