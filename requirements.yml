@@ -1,4 +1,8 @@
 ---
 collections:
+
+  - name: community.postgresql
+    version: 4.6.1
+
   - name: community.postgresql
     version: 2.3.2
