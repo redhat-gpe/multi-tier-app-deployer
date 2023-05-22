@@ -54,6 +54,7 @@
         virtualenv: "{{ virtualenv_home }}/{{ flask_app_name }}"
         virtualenv_site_packages: no
         virtualenv_command: /usr/local/bin/virtualenv
+        virtualenv_python: /usr/bin/python3.8
   tags:
     - venv
     - virtualenv  
